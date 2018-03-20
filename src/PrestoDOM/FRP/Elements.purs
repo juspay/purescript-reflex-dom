@@ -25,9 +25,9 @@ import PrestoDOM.Events (EventHandler, onClick, onChange)
 import DOM (DOM)
 
 import Halogen.VDom.DOM (buildVDom)
-import Halogen.VDom.Machine (never, extract, step, Step(..))
+import Halogen.VDom.Machine (extract, step)
 import Halogen.VDom.Types (VDom(..), ElemSpec(..), ElemName(..))
-import Halogen.VDom.DOM.Prop (Prop(..))
+import Halogen.VDom.DOM.Prop (Prop)
 
 type WidgetState i = List (Dynamic (VDom (Array (Prop i)) Void))
 type FWidget i m a = StateT (WidgetState i) m a

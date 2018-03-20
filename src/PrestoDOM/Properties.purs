@@ -2,13 +2,13 @@ module PrestoDOM.Properties where
 
 import Prelude
 
-import Data.Tuple (Tuple(..))
-import Data.Newtype (class Newtype, unwrap)
+import Data.Newtype (class Newtype)
 import Data.Generic (class Generic)
 
-import PrestoDOM.Types (Length(..), VDom, renderLength)
+import PrestoDOM.Types.DomAttributes (Length, renderLength)
 
-import Halogen.VDom.DOM.Prop (ElemRef(..), Prop(..), PropValue, propFromBoolean, propFromInt, propFromNumber, propFromString)
+import Halogen.VDom.Types (VDom)
+import Halogen.VDom.DOM.Prop (Prop(..), PropValue, propFromBoolean, propFromInt, propFromNumber, propFromString)
 
 -- |
 -- | The phantom type `value` describes the type of value which this property

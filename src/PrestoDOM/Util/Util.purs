@@ -2,21 +2,10 @@ module PrestoDOM.Util where
 
 import Prelude
 import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
-import DOM (DOM)
 import DOM.Node.Types (Element, Document)
-import FRP (FRP)
-import FRP as F
-import FRP.Behavior (Behavior, behavior, sample_)
-import FRP.Behavior as B
-import FRP.Event (Event, subscribe)
-import FRP.Event as E
-import Halogen.VDom (Step(..), VDom, VDomMachine, VDomSpec(..), buildVDom, extract)
-import Halogen.VDom.Machine (never, step, extract)
-import Halogen.VDom.DOM.Prop (Prop(..), PropValue)
-import Prelude (Unit, Void, bind, const, discard, pure, unit, ($))
-import PrestoDOM.Properties (a_duration)
-import PrestoDOM.Types (Rec)
+import Halogen.VDom (Step(..), VDomMachine, VDomSpec(..))
+import Halogen.VDom.Machine (never)
+import Halogen.VDom.DOM.Prop (Prop)
 
 foreign import logNode :: forall eff a . a  -> Eff eff Unit
 foreign import applyAttributes ∷ forall i eff. Element → (Array (Prop i)) → Eff eff (Array (Prop i))

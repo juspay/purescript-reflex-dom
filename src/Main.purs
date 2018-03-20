@@ -11,7 +11,7 @@ import Data.Tuple (Tuple(..))
 import PrestoDOM.FRP
 import PrestoDOM.FRP.Elements
 import PrestoDOM.Properties
-import PrestoDOM.Types
+import PrestoDOM.Types.DomAttributes
 
 type State =
   { errorMsg :: String

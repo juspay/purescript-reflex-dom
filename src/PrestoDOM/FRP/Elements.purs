@@ -17,7 +17,7 @@ import Data.Tuple (Tuple(..))
 import Data.List (List(..), toUnfoldable, reverse)
 import Data.Array (snoc)
 import Data.Traversable (sequence)
-import PrestoDOM.Core
+import PrestoDOM.FRP
 import PrestoDOM.Util (getRootNode, insertDom, storeMachine, getLatestMachine, spec)
 import PrestoDOM.Properties (width, height)
 import PrestoDOM.Types.DomAttributes (Length(..))

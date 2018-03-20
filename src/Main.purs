@@ -8,7 +8,7 @@ import Data.String (length)
 import FRP (FRP)
 import Data.Tuple (Tuple(..))
 
-import PrestoDOM.Core
+import PrestoDOM.FRP
 import PrestoDOM.FRP.Elements
 import PrestoDOM.Properties
 import PrestoDOM.Types

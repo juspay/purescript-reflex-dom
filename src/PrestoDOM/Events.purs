@@ -4,11 +4,8 @@ import Prelude
 
 import DOM (DOM)
 import Control.Monad.Eff (Eff)
-import DOM.Event.Types (EventType(..), Event) as DOM
-import Data.Maybe (Maybe(..))
-import Data.Tuple (Tuple(..))
 import FRP (FRP)
-import Halogen.VDom.DOM.Prop (PropValue, Prop, propFromBoolean)
+import Halogen.VDom.DOM.Prop (Prop)
 import PrestoDOM.Properties (prop, PropName(..))
 import Unsafe.Coerce (unsafeCoerce)
 

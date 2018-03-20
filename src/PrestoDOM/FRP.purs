@@ -1,5 +1,4 @@
-module PrestoDOM.Core
-	(
+module PrestoDOM.FRP (
     Dynamic(..)
     , stepDyn
     , combineDyn

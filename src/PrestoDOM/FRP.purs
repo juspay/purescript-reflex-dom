@@ -18,10 +18,11 @@ module PrestoDOM.FRP (
 import Prelude
 
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Plus ((<|>))
+import Data.Filterable (filter)
 import Data.Lens (Getter', Lens', lens, (^.))
 import Data.Lens.Record (prop)
 import Data.Maybe (Maybe(..))
-import Data.Filterable (filter)
 import Data.Symbol (SProxy(..))
 import Data.Tuple (Tuple(..))
 import FRP (FRP)
@@ -49,6 +50,21 @@ instance applicativeDynamic :: Applicative Dynamic where
   pure a = let ev = pure a
                b = step a ev
            in Dynamic { init: a,  beh: b, event: ev }
+
+instance bindDynamic :: Bind Dynamic where
+  bind (Dynamic { init: aInit, event: aEvt }) f = stepDyn bInit $ bEvt1 <|> bEvt2 <|> bEvt3
+    where Dynamic { init: bInit, event: bEvt1 } = f aInit
+          dynEvt = f <$> aEvt
+          bEvt2 = getInit <$> dynEvt
+          bEvt3 = keepLatest $ getEvt <$> dynEvt
+
+instance monadDynamic :: Monad Dynamic
+
+getInit :: forall a. Dynamic a -> a
+getInit (Dynamic { init }) = init
+
+getEvt :: forall a. Dynamic a -> Event a
+getEvt (Dynamic { event }) = event
 
 stepDyn :: forall a. a -> Event a -> Dynamic a
 stepDyn v e = Dynamic { init: v, beh: step v e, event: e }

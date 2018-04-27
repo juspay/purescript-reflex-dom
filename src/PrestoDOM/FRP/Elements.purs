@@ -1,33 +1,32 @@
 module PrestoDOM.FRP.Elements where
 
 import Prelude
-
-import FRP (FRP)
-import FRP.Event (Event, create, subscribe)
+import PrestoDOM.FRP
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.State.Trans (StateT, runStateT)
 import Control.Monad.State.Class (get, put)
+import Control.Monad.State.Trans (StateT, runStateT)
 import Control.Monad.Trans.Class (lift)
-
-import Data.Lens ((^.))
-import Data.Maybe (Maybe(..))
-import Data.Tuple (Tuple(..))
-import Data.List (List(..), toUnfoldable, reverse)
-import Data.Array (snoc)
-import Data.Traversable (sequence)
-import PrestoDOM.FRP
-import PrestoDOM.Util (getRootNode, insertDom, storeMachine, getLatestMachine, spec)
-import PrestoDOM.Properties (width, height)
-import PrestoDOM.Types.DomAttributes (Length(..))
-import PrestoDOM.Events (EventHandler, onClick, onChange)
 import DOM (DOM)
-
+import DOM.Node.Element (tagName)
+import Data.Array (snoc)
+import Data.Lens ((^.))
+import Data.List (List(..), toUnfoldable, reverse)
+import Data.Maybe (Maybe(..))
+import Data.Traversable (sequence)
+import Data.Tuple (Tuple(..), snd)
+import FRP (FRP)
+import FRP.Event (Event, create, subscribe)
 import Halogen.VDom.DOM (buildVDom)
+import Halogen.VDom.DOM.Prop (Prop)
 import Halogen.VDom.Machine (extract, step)
 import Halogen.VDom.Types (VDom(..), ElemSpec(..), ElemName(..))
-import Halogen.VDom.DOM.Prop (Prop)
+import PrestoDOM.Events (EventHandler, onClick, onChange)
+import PrestoDOM.Properties (width, height)
+import PrestoDOM.Types.DomAttributes (Length(..))
+import PrestoDOM.Util (getRootNode, insertDom, storeMachine, getLatestMachine, spec)
+import Unsafe.Coerce (unsafeCoerce)
 
 type WidgetState i = List (Dynamic (VDom (Array (Prop i)) Void))
 type FWidget i m a = StateT (WidgetState i) m a
@@ -77,6 +76,37 @@ el' tagName propsDyn child = do
   oldL <- get
   put $ Cons domDyn oldL
   pure res
+
+widgetHoldInternal :: forall m i a b e. MonadEff (FrpDomEffect e) m => String -> Array (Prop i) -> FWidget i m a -> Event (FWidget i m b) -> FWidget i m (Tuple a (Event b))
+widgetHoldInternal tagName props w e = do
+  let elemSpec = ElemSpec Nothing (ElemName tagName) props
+      mkElem = Elem elemSpec <<< toUnfoldable <<< reverse
+  Tuple res0 cl0 <- lift $ runStateT w Nil
+  { event: resEvt, push: resPush } <- liftEff create
+  { event: clEvt, push: clPush } <- liftEff create
+
+  let f ch = do
+        Tuple res1 cl1 <- runStateT ch Nil
+        resPush res1
+        clPush $ sequence cl1
+  
+  _ <- liftEff $ subscribe e (unsafeCoerce f)
+
+  let domDyn = mkElem <$> join (stepDyn (sequence cl0) clEvt)
+  oldL <- get
+  put $ Cons domDyn oldL
+  pure $ Tuple res0 resEvt
+
+widgetHold :: forall m i a e. MonadEff (FrpDomEffect e) m => String -> Array (Prop i) -> FWidget i m a -> Event (FWidget i m a) -> FWidget i m (Dynamic a)
+widgetHold tagName props w e = do
+  Tuple a ea <- widgetHoldInternal tagName props w e
+  pure $ stepDyn a ea
+
+dyn :: forall m i a e. MonadEff (FrpDomEffect e) m => String -> Array (Prop i) -> Dynamic (FWidget i m a) -> FWidget i m (Event a)
+dyn tagName props d = do
+  let initW = d ^. init
+      evtW = d ^. ev
+  snd <$> widgetHoldInternal tagName props initW evtW
 
 -- | Wrap the child element with event processing. NOTE: if the child is a sequence of elements, it will put event listener
 --   on all of them.

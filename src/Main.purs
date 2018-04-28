@@ -23,7 +23,7 @@ type State =
 main :: forall eff. Eff ( console :: CONSOLE, frp :: FRP, dom :: DOM | eff ) Unit
 main = runFWidget demoWidget
 
-demoWidget :: forall i e. FWidget i (Eff (frp :: FRP, dom :: DOM | e)) Unit
+demoWidget :: forall i e. FWidget i e Unit
 demoWidget = do
   let rootProp = [ height Match_Parent, width Match_Parent, background "#323232", gravity "center", name "rootNode"]
       centerProp = [ height $ V 600, width $ V 400, background "#000000", orientation "vertical", gravity "center"]

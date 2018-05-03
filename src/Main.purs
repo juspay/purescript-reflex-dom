@@ -2,6 +2,7 @@ module Main where
 
 import Prelude
 import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Class (class MonadEff)
 import Control.Monad.Eff.Console (CONSOLE)
 import DOM (DOM)
 import Data.String (length)
@@ -23,7 +24,7 @@ type State =
 main :: forall eff. Eff ( console :: CONSOLE, frp :: FRP, dom :: DOM | eff ) Unit
 main = runFWidget demoWidget
 
-demoWidget :: forall i e. FWidget i e Unit
+demoWidget :: forall m e. MonadEff (FWidgetEff e) m => FWidget m Unit
 demoWidget = do
   let rootProp = [ height Match_Parent, width Match_Parent, background "#323232", gravity "center", name "rootNode"]
       centerProp = [ height $ V 600, width $ V 400, background "#000000", orientation "vertical", gravity "center"]

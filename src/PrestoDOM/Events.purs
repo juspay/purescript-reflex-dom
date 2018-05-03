@@ -12,10 +12,10 @@ import Unsafe.Coerce (unsafeCoerce)
 generateProp :: forall a eff. (a -> Eff eff Unit) -> String
 generateProp = unsafeCoerce
 
-type EventHandler e i a = (a -> Eff (frp :: FRP, dom :: DOM | e) Unit) -> Prop i
+type EventHandler e a = (a -> Eff (frp :: FRP, dom :: DOM | e) Unit) -> Prop Unit
 
-onClick :: forall e i a. EventHandler e i a
+onClick :: forall e a. EventHandler e a
 onClick push = prop (PropName "onClick") (generateProp push)
 
-onChange :: forall e i a. EventHandler e i a
+onChange :: forall e a. EventHandler e a
 onChange push = prop (PropName "onChange") (generateProp push)

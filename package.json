@@ -17,7 +17,7 @@
     "presto-ui": "^0.3.3",
     "ramda": "^0.25.0",
     "webpack": "^3.5.5",
-    "webpack-dev-server": "2.9.7"
+    "webpack-dev-server": "4.13.3"
   },
   "author": "shiyou.wang@juspay.in",
   "license": "ISC"
